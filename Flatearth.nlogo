@@ -1,7 +1,7 @@
 breed [persons person]
 breed [flatearthers flatearther]
 
-persons-own [ person-iq-level convinced? spreader? fightback?]
+persons-own [ person-iq-level convinced? spreader? fightback? flatearther-conviction-level]
 flatearthers-own [flatearth-iq-level ]
 
 to setup
@@ -9,7 +9,16 @@ to setup
   set-default-shape turtles "circle" ;set the default shape of the turtles to circle
   create-agents
   create-flatearther
+
+  if add-library = true [
+    create-library
+  ]
+
   reset-ticks
+end
+
+to create-library ; Procedure that creates a random library
+
 end
 
 to create-agents ; Procedure to create the agents
@@ -25,7 +34,7 @@ to create-agents ; Procedure to create the agents
 
 end
 
-to create-flatearther ;
+to create-flatearther ; Procedure to create the flat earther
   create-flatearthers flateather-number [
     setxy random-xcor random-ycor
     set size 1
@@ -41,7 +50,7 @@ to go
   tick
 end
 
-to move-persons
+to move-persons ;procedure which moves randomly the agents
   ask persons [
    rt random 360
    fd 1
@@ -52,7 +61,7 @@ to move-persons
   ]
 end
 
-to move-flatearthers
+to move-flatearthers ; Procedure which moves randomly the flat earthers
   ask flatearthers [
    rt random 360
    fd 1
@@ -60,19 +69,20 @@ to move-flatearthers
   ]
 end
 
-to flatearther-convince-others
+to flatearther-convince-others ; Procedure used to check if a flat earther can convince the person he meets
 
   let flatearther-iq flatearth-iq-level
 
-  ask other persons-here with [(convinced? = false)]
+  ask other persons-here with [(convinced? = false)] ; Checking if there are other persons not convinced on the same patch
   [
-    let flatearther-conviction random-normal flatearther-iq 15
+    let flatearther-conviction random-normal flatearther-iq 15 ; The variance os set to 15 IQ points
     let person-credulity random-normal person-iq-level 15
 
-    if ( person-credulity < flatearther-conviction )
+    if ( person-credulity < flatearther-conviction ) ; If the peson met has a credibility lower than the conviction, he is convinced
     [
-      set convinced? true
-      set color red
+      set convinced? true ; We set the convinced? variable to true
+      set color red ; we set the color to red
+      set flatearther-conviction = flatearther-conviction-level ; We keep track of the conviction level. It can be reset by another person or by the library
     ]
   ]
 
@@ -89,6 +99,7 @@ to convince-others
     [
       set convinced? true
       set color red
+
     ]
   ]
   ]
@@ -184,7 +195,7 @@ population
 population
 10
 1000
-200.0
+660.0
 10
 1
 NIL
@@ -199,7 +210,7 @@ flateather-number
 flateather-number
 0
 10
-1.0
+5.0
 1
 1
 NIL
@@ -283,6 +294,17 @@ false
 PENS
 "default" 1.0 0 -13840069 true "" "plot mean [person-iq-level] of turtles with [ color = green ]"
 "pen-1" 1.0 0 -14070903 true "" "plot mean [person-iq-level] of turtles with [ color = blue ]"
+
+SWITCH
+55
+358
+165
+391
+add-library
+add-library
+1
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
